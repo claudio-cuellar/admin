@@ -1,0 +1,57 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Mobile background (default) */
+.login-container {
+  background-image: url('/images/background-mobile.jpg');
+}
+
+/* Tablet background */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .login-container {
+    background-image: url('/images/background-tablet.jpg');
+  }
+}
+
+/* Desktop background */
+@media (min-width: 1024px) {
+  .login-container {
+    background-image: url('/images/background-desktop.jpg');
+  }
+}
+
+/* Overlay for better text readability */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .login-container {
+    background-attachment: scroll;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  .login-container {
+    background-size: cover;
+  }
+}
