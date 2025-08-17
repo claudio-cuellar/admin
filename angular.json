@@ -29,7 +29,7 @@
               {
                 "glob": "**/*",
                 "input": "public/images",
-                "output": "/admin/images"
+                "output": "/images"
               }
             ],
             "styles": [
