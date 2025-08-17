@@ -36,7 +36,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         source: "dist/admin/*"
-        target: "/home/ubuntu/"
+        target: "/home/ubuntu/admin/"
         strip_components: 2
         
     - name: Setup application on server
