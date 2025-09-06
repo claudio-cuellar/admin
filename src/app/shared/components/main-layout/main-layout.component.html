@@ -1,0 +1,9 @@
+<div class="antialiased bg-gray-50 dark:bg-gray-900">
+  <!-- Pass event to toggle sidebar -->
+  <app-topbar (menuClick)="toggleSidebar()"></app-topbar>
+
+  <!-- Sidebar with state binding -->
+  <app-sidebar [open]="sidebarOpen"></app-sidebar>
+
+  <app-dashboard></app-dashboard>
+</div>
