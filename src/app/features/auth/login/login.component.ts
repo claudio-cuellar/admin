@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -13,10 +15,12 @@ import { AuthService } from '@services/auth/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   loginForm: FormGroup;
 
   constructor(
-    private authService: AuthService,
     private formBuilder: FormBuilder
   ) {
     this.loginForm = this.formBuilder.group({
@@ -31,10 +35,11 @@ export class LoginComponent {
       const formData = this.loginForm.value;
       
       // Call your auth service here
-      this.authService.login(formData.email, formData.password).subscribe({
-        next: (response) => {
-          console.log('Login successful:', response);
-          // Handle successful login (e.g., redirect to dashboard)
+      this.authService.login(formData.email, formData.password).pipe(
+        take(1)
+      ).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Login error:', error);

@@ -14,6 +14,10 @@ export class UserService {
         return this.http.get<User>(`${this.baseUrl}/${userId}/`);
     }
 
+    getMyDetails(): Observable<User> {
+        return this.http.get<User>(`${this.baseUrl}/me/`);
+    }
+
     updateUserDetails(userId: string, userData: Partial<User>): Observable<User> {
         return this.http.put<User>(`${this.baseUrl}/${userId}/`, userData);
     }
