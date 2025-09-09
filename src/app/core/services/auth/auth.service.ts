@@ -36,7 +36,6 @@ export class AuthService {
     }
 
     logout() {
-        console.log(`logging out`);
         this.token.set(null);
         localStorage.removeItem('auth_token');
     }

@@ -6,6 +6,13 @@ export const GuestGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  
+  if (state.url.indexOf('logout') > -1) {
+    authService.logout();
+    router.navigate(['/auth/login']);
+    return false;
+  }
+
   if (!authService.isLoggedIn()) {
     return true;
   }
