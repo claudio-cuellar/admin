@@ -1,7 +1,9 @@
+import { SafeHtml } from "@angular/platform-browser";
+
 export interface MenuItem {
   id: string;
   label: string;
-  icon: string;
+  icon: SafeHtml;
   route?: string;
   badge?: {
     text: string;
