@@ -5,5 +5,7 @@
   <!-- Sidebar with state binding -->
   <app-sidebar [open]="sidebarOpen"></app-sidebar>
 
-  <app-dashboard></app-dashboard>
+  <main class="p-4 md:ml-64 h-auto pt-20">
+    <router-outlet />
+  </main>
 </div>

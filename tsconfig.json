@@ -5,7 +5,7 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@models/*": ["app/shared/models/*"],
+      "@models/*": ["app/core/models/*"],
       "@services/*": ["app/core/services/*"],
       "@guards/*": ["app/core/guards/*"],
     },

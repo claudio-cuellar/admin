@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
+import { AuthLayoutComponent } from './shared/components/auth-layout/auth-layout.component';
 import { AuthGuard } from '@guards/auth.guard';
+import { GuestGuard } from '@guards/guest.guard';
 
 export const routes: Routes = [
     {
@@ -9,16 +11,23 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
-        path: 'auth', 
-        loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+        path: '',
+        component: AuthLayoutComponent,
+        canActivate: [GuestGuard],
+        children: [
+            {
+                path: 'auth',
+                loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+            },
+        ]
     },
     {
-        path: 'dashboard',
+        path: 'main',
         component: MainLayoutComponent,
         canActivate: [AuthGuard],
         children: [
             {
-                path: 'overview',
+                path: 'dashboard',
                 loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.dashboardRoutes)
             },
             // {
