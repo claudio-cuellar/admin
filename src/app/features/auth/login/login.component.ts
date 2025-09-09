@@ -39,7 +39,7 @@ export class LoginComponent {
         take(1)
       ).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/main/dashboard']);
         },
         error: (error) => {
           console.error('Login error:', error);
