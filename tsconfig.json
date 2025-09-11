@@ -8,6 +8,7 @@
       "@models/*": ["app/core/models/*"],
       "@services/*": ["app/core/services/*"],
       "@guards/*": ["app/core/guards/*"],
+      "@components/*": ["app/shared/components/*"],
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
