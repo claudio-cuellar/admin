@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TableColumn, TableComponent, TableData } from '@components/table/table.component';
 
 @Component({
@@ -6,7 +6,7 @@ import { TableColumn, TableComponent, TableData } from '@components/table/table.
   templateUrl: 'transactions-list.component.html',
   imports: [TableComponent],
 })
-export class TransactionsListComponent implements OnInit {
+export class TransactionsListComponent {
   headers: TableColumn[] = [
     { key: 'id', label: 'ID', sortable: true, width: '80px' },
     { key: 'name', label: 'Name', sortable: true },
@@ -25,6 +25,4 @@ export class TransactionsListComponent implements OnInit {
   ];
   
   constructor() {}
-
-  ngOnInit() {}
 }

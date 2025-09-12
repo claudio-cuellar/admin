@@ -1,5 +1,8 @@
 @import 'tailwindcss';
-@import 'flowbite/dist/flowbite.min.css';
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
 
 /* width */
 ::-webkit-scrollbar {

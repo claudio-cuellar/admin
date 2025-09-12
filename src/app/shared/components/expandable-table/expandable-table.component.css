@@ -1,0 +1,98 @@
+.table-container {
+  @apply shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg;
+}
+
+.table {
+  @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+}
+
+.table-striped tbody tr:nth-child(even) {
+  @apply bg-gray-50 dark:bg-gray-750;
+}
+
+.table-hover tbody tr:hover {
+  @apply bg-gray-100 dark:bg-gray-600;
+}
+
+.table-bordered {
+  @apply border-collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+  @apply border border-gray-200 dark:border-gray-600;
+}
+
+/* Smooth transitions for expand/collapse */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Rotate animation for expand button */
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* Custom scrollbar for nested tables */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 6px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark .overflow-x-auto::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .table-container {
+    @apply overflow-x-auto;
+  }
+  
+  .table {
+    @apply min-w-max;
+  }
+  
+  .table th,
+  .table td {
+    @apply px-3 py-2 text-xs;
+  }
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
