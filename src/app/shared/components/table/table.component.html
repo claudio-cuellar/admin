@@ -58,7 +58,11 @@
               <td 
                 [style.text-align]="getColumnAlign(header)"
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                {{ row[header.key] }}
+                @if (header.isHtml) {
+                  <span [innerHTML]="row[header.key]"></span>
+                } @else {
+                  {{ row[header.key] }}
+                }
               </td>
             }
           </tr>

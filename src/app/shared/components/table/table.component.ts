@@ -7,6 +7,7 @@ export interface TableColumn {
   sortable?: boolean;
   width?: string;
   align?: 'left' | 'center' | 'right';
+  isHtml?: boolean; // Add this new property
 }
 
 export interface TableData {

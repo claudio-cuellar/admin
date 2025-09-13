@@ -9,6 +9,7 @@
       "@services/*": ["app/core/services/*"],
       "@guards/*": ["app/core/guards/*"],
       "@components/*": ["app/shared/components/*"],
+      "@pipes/*": ["app/shared/pipes/*"],
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
