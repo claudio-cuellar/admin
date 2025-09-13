@@ -74,7 +74,6 @@ export class TransactionsListComponent implements OnInit {
         next: (transactions) => {
           this.transactions = transactions;
           this.data = this.mapTransactionsToTableData(transactions);
-          console.log(this.data);
           this.loading = false;
         },
         error: (error) => {
@@ -86,40 +85,17 @@ export class TransactionsListComponent implements OnInit {
 
   private mapTransactionsToTableData(transactions: Transaction[]): TableData[] {
     return transactions.map((transaction: any) => {
-      const categoryName = this.getCategoryName(transaction.category);
-      
       return {
         id: transaction.id,
         transaction_type: this.formatTransactionType(transaction.transaction_type),
         amount: this.formatAmount(transaction.amount, transaction.transaction_type),
-        category_name: categoryName,
+        category_name: transaction.category_name,
         date: this.formatDate(transaction.date),
         notes: transaction.notes || '-',
         // Store original data for potential actions
         _original: transaction
       };
     });
-  }
-
-  private getCategoryName(categoryId: string | number): string {
-    if (!categoryId) return 'Unknown';
-    
-    // Search in main categories
-    for (const category of this.categories) {
-      if (category.id === categoryId.toString()) {
-        return category.name;
-      }
-      // Search in subcategories
-      if (category.subcategories) {
-        for (const subcategory of category.subcategories) {
-          if (subcategory.id === categoryId.toString()) {
-            return `${category.name} > ${subcategory.name}`;
-          }
-        }
-      }
-    }
-    
-    return `Category ${categoryId}`;
   }
 
   private formatTransactionType(type: TransactionType): string {
