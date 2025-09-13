@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerComponent } from '@components/container/container.component';
 import { EnhancedContainerComponent } from '@components/enhanced-container/enhanced-container.component';
 import { Category } from '@models/categories.model';
@@ -55,10 +56,18 @@ export interface TransactionDetails {
 export class TransactionsCreateComponent {
   private categorieService = inject(CategoriesService);
   private transactionsService = inject(TransactionsService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   allCategories: Category[] = [];
   currentStep = 1;
   isLoading = false;
+
+  // Toast state management
+  showToast = false;
+  toastType: 'success' | 'error' = 'success';
+  toastMessage = '';
+  toastTitle = '';
 
   steps: TransactionStep[] = [
     {
@@ -216,14 +225,87 @@ export class TransactionsCreateComponent {
       this.transactionsService
         .createTransaction(transaction)
         .pipe(take(1))
-        .subscribe((response) => {
-          console.log(response);
-          this.isLoading = false;
+        .subscribe({
+          next: (response) => {
+            console.log(response);
+            this.isLoading = false;
+            this.showSuccessToast('Transaction created successfully!', 'Your transaction has been saved.');
+            // Reset form after successful creation
+            this.resetForm();
+            this.router.navigate(['../list'], { relativeTo: this.route });
+          },
+          error: (error) => {
+            console.error('Error creating transaction:', error);
+            this.isLoading = false;
+            this.showErrorToast('Failed to create transaction', 'Please try again or contact support if the problem persists.');
+          }
         });
     }
   }
 
-  // Add these helper methods to the component class
+  // Toast management methods
+  showSuccessToast(title: string, message: string): void {
+    this.toastType = 'success';
+    this.toastTitle = title;
+    this.toastMessage = message;
+    this.showToast = true;
+    this.autoHideToast();
+  }
+
+  showErrorToast(title: string, message: string): void {
+    this.toastType = 'error';
+    this.toastTitle = title;
+    this.toastMessage = message;
+    this.showToast = true;
+    this.autoHideToast();
+  }
+
+  hideToast(): void {
+    this.showToast = false;
+  }
+
+  private autoHideToast(): void {
+    setTimeout(() => {
+      this.hideToast();
+    }, 5000); // Hide after 5 seconds
+  }
+
+  private resetForm(): void {
+    // Reset to first step
+    this.currentStep = 1;
+    this.updateStepStates();
+    
+    // Clear selections
+    this.selectedCategory = null;
+    this.selectedSubcategory = null;
+    
+    // Reset transaction details
+    this.transactionDetails = {
+      transactionType: 'OUT' as TransactionType,
+      amount: 0,
+      description: '',
+      date: new Date().toISOString().split('T')[0],
+    };
+    
+    // Clear categories and subcategories
+    this.categories.forEach(cat => cat.selected = false);
+    this.subcategories = [];
+  }
+
+  getToastClasses(): string {
+    const baseClasses = 'flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800';
+    const typeClasses = this.toastType === 'success' 
+      ? 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200'
+      : 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200';
+    return `${baseClasses} ${typeClasses}`;
+  }
+
+  getToastIconClasses(): string {
+    return this.toastType === 'success'
+      ? 'inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200'
+      : 'inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200';
+  }
+
   getStepClasses(step: TransactionStep, hasConnector: boolean): string {
     const baseClasses = 'flex items-center cursor-pointer';
     const connectorClasses = hasConnector ? 'w-full' : '';
