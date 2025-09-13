@@ -5,7 +5,9 @@ import { SafeHtml } from '@angular/platform-browser';
 import { ContainerComponent } from '@components/container/container.component';
 import { EnhancedContainerComponent } from '@components/enhanced-container/enhanced-container.component';
 import { Category } from '@models/categories.model';
+import { TransactionPayload, TransactionType } from '@models/transaction.model';
 import { CategoriesService } from '@services/categories/categories.service';
+import { TransactionsService } from '@services/transactions/transactions.service';
 import { take } from 'rxjs';
 
 export interface TransactionStep {
@@ -32,6 +34,7 @@ export interface _Subcategory {
 }
 
 export interface TransactionDetails {
+  transactionType: TransactionType;
   amount: number;
   description: string;
   date: string;
@@ -51,7 +54,9 @@ export interface TransactionDetails {
 })
 export class TransactionsCreateComponent {
   private categorieService = inject(CategoriesService);
-  allCategories : Category[] = [];
+  private transactionsService = inject(TransactionsService);
+
+  allCategories: Category[] = [];
   currentStep = 1;
   isLoading = false;
 
@@ -84,10 +89,27 @@ export class TransactionsCreateComponent {
   subcategories: _Subcategory[] = [];
 
   transactionDetails: TransactionDetails = {
+    transactionType: 'OUT' as TransactionType, // Default to 'Egresos'
     amount: 0,
     description: '',
     date: new Date().toISOString().split('T')[0],
   };
+
+  // Transaction type options for the UI
+  transactionTypes = [
+    {
+      value: 'IN' as TransactionType,
+      label: 'Ingresos',
+      icon: '💰',
+      color: 'text-green-600',
+    },
+    {
+      value: 'OUT' as TransactionType,
+      label: 'Egresos',
+      icon: '💸',
+      color: 'text-red-600',
+    },
+  ];
 
   selectedCategory: _Category | null = null;
   selectedSubcategory: _Subcategory | null = null;
@@ -102,22 +124,23 @@ export class TransactionsCreateComponent {
 
   get canComplete(): boolean {
     return (
-      this.transactionDetails.amount > 0 &&
-      this.transactionDetails.description.trim() !== ''
+      this.transactionDetails.transactionType &&
+      this.transactionDetails.amount > 0
     );
   }
 
   constructor() {
-    this.categorieService.getCategories().pipe(
-      take(1)
-    ).subscribe((response: Category[]) => {
-      this.allCategories = response;
-      this.categories = response.map((category: Category) => ({
-        id: category.id,
-        name: category.name,
-        icon: category.icon,
-      }));
-    });
+    this.categorieService
+      .getCategories()
+      .pipe(take(1))
+      .subscribe((response: Category[]) => {
+        this.allCategories = response;
+        this.categories = response.map((category: Category) => ({
+          id: category.id,
+          name: category.name,
+          icon: category.icon,
+        }));
+      });
   }
 
   selectCategory(category: _Category): void {
@@ -125,14 +148,15 @@ export class TransactionsCreateComponent {
     category.selected = true;
     this.selectedCategory = category;
     this.selectedSubcategory = null;
-    this.subcategories = this.allCategories
-      .find((cat) => cat.id === category.id)
-      ?.subcategories.map((sub) => ({
-        id: sub.id,
-        name: sub.name,
-        categoryId: sub.parent || '',
-        selected: false
-      })) || [];
+    this.subcategories =
+      this.allCategories
+        .find((cat) => cat.id === category.id)
+        ?.subcategories.map((sub) => ({
+          id: sub.id,
+          name: sub.name,
+          categoryId: sub.parent || '',
+          selected: false,
+        })) || [];
   }
 
   selectSubcategory(subcategory: _Subcategory): void {
@@ -181,21 +205,22 @@ export class TransactionsCreateComponent {
   submitTransaction(): void {
     if (this.canComplete) {
       this.isLoading = true;
-      // Simulate API call
-      setTimeout(() => {
-        console.log('Transaction submitted:', {
-          category: this.selectedCategory,
-          subcategory: this.selectedSubcategory,
-          details: this.transactionDetails,
-        });
-        this.isLoading = false;
-        // Reset form or navigate away
-      }, 2000);
-    }
-  }
+      let transaction: TransactionPayload = {
+        transaction_type: this.transactionDetails.transactionType,
+        amount: this.transactionDetails.amount,
+        date: this.transactionDetails.date,
+        category: this.selectedSubcategory?.id || '',
+        notes: this.transactionDetails.description,
+      };
 
-  onCardClick(): void {
-    // Implementation for card click if needed
+      this.transactionsService
+        .createTransaction(transaction)
+        .pipe(take(1))
+        .subscribe((response) => {
+          console.log(response);
+          this.isLoading = false;
+        });
+    }
   }
 
   // Add these helper methods to the component class
@@ -246,5 +271,23 @@ export class TransactionsCreateComponent {
     return this.canComplete && !this.isLoading
       ? 'bg-green-600 text-white hover:bg-green-700'
       : 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400';
+  }
+
+  selectTransactionType(type: TransactionType): void {
+    this.transactionDetails.transactionType = type;
+  }
+
+  getTransactionTypeClasses(type: TransactionType): string {
+    const isSelected = this.transactionDetails.transactionType === type;
+    const baseClasses =
+      'p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md flex items-center space-x-3';
+
+    if (isSelected) {
+      return type === 'IN'
+        ? `${baseClasses} border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-400`
+        : `${baseClasses} border-red-500 bg-red-50 dark:bg-red-900/20 dark:border-red-400`;
+    }
+
+    return `${baseClasses} border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600`;
   }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Transaction } from '@models/transaction.model';
+import { Transaction, TransactionPayload } from '@models/transaction.model';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
@@ -11,5 +11,10 @@ export class TransactionsService {
 
     getTransactions(): Observable<Transaction[]> {
         return this.http.get<Transaction[]>(`${this.apiUrl}/transactions/`);
+    }
+
+    createTransaction(transaction: TransactionPayload): Observable<Transaction> {
+
+        return this.http.post<Transaction>(`${this.apiUrl}/transactions/`, transaction);
     }
 }
