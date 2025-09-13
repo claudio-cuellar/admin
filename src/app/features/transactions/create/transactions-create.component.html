@@ -54,7 +54,7 @@
             <!-- Step 2: Subcategories -->
             <app-enhanced-container *ngIf="currentStep === 2" title="Select Subcategory">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div *ngFor="let subcategory of filteredSubcategories" (click)="selectSubcategory(subcategory)"
+                    <div *ngFor="let subcategory of subcategories" (click)="selectSubcategory(subcategory)"
                         [class]="getSubcategoryCardClasses(subcategory)"
                         class="p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md">
                         <span class="font-medium text-gray-900 dark:text-white">{{ subcategory.name }}</span>

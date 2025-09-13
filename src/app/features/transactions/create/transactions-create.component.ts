@@ -27,7 +27,7 @@ export interface _Subcategory {
   id: string;
   name: string;
   icon?: SafeHtml;
-  categoryId: number;
+  categoryId: string;
   selected?: boolean;
 }
 
@@ -51,6 +51,7 @@ export interface TransactionDetails {
 })
 export class TransactionsCreateComponent {
   private categorieService = inject(CategoriesService);
+  allCategories : Category[] = [];
   currentStep = 1;
   isLoading = false;
 
@@ -91,15 +92,6 @@ export class TransactionsCreateComponent {
   selectedCategory: _Category | null = null;
   selectedSubcategory: _Subcategory | null = null;
 
-  get filteredSubcategories(): _Subcategory[] {
-    // return this.selectedCategory
-    //   ? this.subcategories.filter(
-    //       (sub) => sub.categoryId === this.selectedCategory.id
-    //     )
-    //   : [];
-    return [];
-  }
-
   get canProceedToStep2(): boolean {
     return this.selectedCategory !== null;
   }
@@ -119,6 +111,7 @@ export class TransactionsCreateComponent {
     this.categorieService.getCategories().pipe(
       take(1)
     ).subscribe((response: Category[]) => {
+      this.allCategories = response;
       this.categories = response.map((category: Category) => ({
         id: category.id,
         name: category.name,
@@ -132,7 +125,14 @@ export class TransactionsCreateComponent {
     category.selected = true;
     this.selectedCategory = category;
     this.selectedSubcategory = null;
-    this.subcategories.forEach((sub) => (sub.selected = false));
+    this.subcategories = this.allCategories
+      .find((cat) => cat.id === category.id)
+      ?.subcategories.map((sub) => ({
+        id: sub.id,
+        name: sub.name,
+        categoryId: sub.parent || '',
+        selected: false
+      })) || [];
   }
 
   selectSubcategory(subcategory: _Subcategory): void {
