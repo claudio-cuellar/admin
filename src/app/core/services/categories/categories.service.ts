@@ -14,7 +14,8 @@ export class CategoriesService {
 
   getCategories(): Observable<Category[]> {
     const language = navigator.language;
-    const preferredLang = language.startsWith('es') ? 'es' : 'en';
+    // const preferredLang = language.startsWith('es') ? 'es' : 'en';
+    const preferredLang = language.startsWith('es') ? 'es' : 'es';
 
     return this.http
       .get<CategoryResponse[]>(`${this.apiUrl}/categories/`)
