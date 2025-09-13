@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TableColumn, TableComponent, TableData } from '@components/table/table.component';
 
 @Component({
   selector: 'app-transactions-list',
   templateUrl: 'transactions-list.component.html',
-  imports: [TableComponent],
+  imports: [RouterModule, TableComponent],
 })
 export class TransactionsListComponent {
   headers: TableColumn[] = [

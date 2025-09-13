@@ -1,0 +1,39 @@
+/* Base container styles */
+.container-base {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 640px) {
+  .container-responsive {
+    @apply p-4 mx-4;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .container-responsive {
+    @apply p-6 mx-6;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container-responsive {
+    @apply p-8 mx-8;
+  }
+}
+
+@media (min-width: 1025px) {
+  .container-responsive {
+    @apply p-10;
+  }
+}
+
+/* Hover effects */
+.container-hover:hover {
+  @apply shadow-lg transform scale-[1.02] transition-all duration-200;
+}
+
+/* Focus styles for accessibility */
+.container-focus:focus-within {
+  @apply ring-2 ring-blue-500 ring-opacity-50;
+}

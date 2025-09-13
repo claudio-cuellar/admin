@@ -1,0 +1,133 @@
+<app-container>
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Flowbite Stepper -->
+        <ol
+            class="flex items-center w-full mb-8 text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base">
+            <li *ngFor="let step of steps; let i = index" class="gap-3" [class]="getStepClasses(step, i < steps.length - 1)"
+                (click)="goToStep(step.id)">
+                <span [class]="getStepNumberClasses(step)">
+                    <ng-container *ngIf="step.completed">
+                        <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 16 12">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M1 5.917 5.724 10.5 15 1.5" />
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="!step.completed">{{ step.id }}</ng-container>
+                </span>
+                <div class="mt-2 hidden portrait:sm:block">
+                    <h3 class="font-medium leading-tight">{{ step.title }}</h3>
+                    <p class="text-sm">{{ step.description }}</p>
+                </div>
+                <!-- Connector line -->
+                <div *ngIf="i < steps.length - 1"
+                    class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700 after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700">
+                </div>
+            </li>
+        </ol>
+
+        <!-- Step Content -->
+        <div class="mt-8">
+            <!-- Step 1: Categories -->
+            <app-enhanced-container *ngIf="currentStep === 1" title="Select Category"
+                subtitle="Choose the category that best describes your transaction">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div *ngFor="let category of categories" (click)="selectCategory(category)"
+                        [class]="getCategoryCardClasses(category)"
+                        class="p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">{{ category.icon }}</span>
+                            <span class="font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button (click)="nextStep()" [disabled]="!canProceedToStep2"
+                        [class]="getButtonClasses(canProceedToStep2)"
+                        class="px-6 py-2 rounded-lg font-medium transition-colors">
+                        Next Step
+                    </button>
+                </div>
+            </app-enhanced-container>
+
+            <!-- Step 2: Subcategories -->
+            <app-enhanced-container *ngIf="currentStep === 2" title="Select Subcategory">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div *ngFor="let subcategory of filteredSubcategories" (click)="selectSubcategory(subcategory)"
+                        [class]="getSubcategoryCardClasses(subcategory)"
+                        class="p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md">
+                        <span class="font-medium text-gray-900 dark:text-white">{{ subcategory.name }}</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button (click)="previousStep()"
+                        class="px-6 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors">
+                        Previous
+                    </button>
+                    <button (click)="nextStep()" [disabled]="!canProceedToStep3"
+                        [class]="getButtonClasses(canProceedToStep3)"
+                        class="px-6 py-2 rounded-lg font-medium transition-colors">
+                        Next Step
+                    </button>
+                </div>
+            </app-enhanced-container>
+
+            <!-- Step 3: Transaction Details -->
+            <app-enhanced-container *ngIf="currentStep === 3" title="Transaction Details"
+                subtitle="Enter the transaction information">
+                <div class="space-y-6">
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Amount
+                        </label>
+                        <input type="number" id="amount" [(ngModel)]="transactionDetails.amount" step="0.01" min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            placeholder="0.00">
+                    </div>
+
+                    <div>
+                        <label for="description"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Description
+                        </label>
+                        <textarea id="description" [(ngModel)]="transactionDetails.description" rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            placeholder="Enter transaction description..."></textarea>
+                    </div>
+
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Date
+                        </label>
+                        <input type="date" id="date" [(ngModel)]="transactionDetails.date"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button (click)="previousStep()"
+                        class="px-6 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors">
+                        Previous
+                    </button>
+                    <button (click)="submitTransaction()" [disabled]="!canComplete || isLoading"
+                        [class]="getSubmitButtonClasses()" class="px-6 py-2 rounded-lg font-medium transition-colors">
+                        <span *ngIf="isLoading" class="inline-flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Processing...
+                        </span>
+                        <span *ngIf="!isLoading">Complete Transaction</span>
+                    </button>
+                </div>
+            </app-enhanced-container>
+        </div>
+    </div>
+</app-container>
