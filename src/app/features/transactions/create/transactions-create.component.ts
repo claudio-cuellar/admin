@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SafeHtml } from '@angular/platform-browser';
 import { ContainerComponent } from '@components/container/container.component';
 import { EnhancedContainerComponent } from '@components/enhanced-container/enhanced-container.component';
+import { Category } from '@models/categories.model';
+import { CategoriesService } from '@services/categories/categories.service';
+import { take } from 'rxjs';
 
 export interface TransactionStep {
   id: number;
@@ -12,16 +16,17 @@ export interface TransactionStep {
   active: boolean;
 }
 
-export interface Category {
-  id: number;
+export interface _Category {
+  id: string;
   name: string;
-  icon: string;
+  icon: SafeHtml;
   selected?: boolean;
 }
 
-export interface Subcategory {
-  id: number;
+export interface _Subcategory {
+  id: string;
   name: string;
+  icon?: SafeHtml;
   categoryId: number;
   selected?: boolean;
 }
@@ -45,6 +50,7 @@ export interface TransactionDetails {
   styleUrl: './transactions-create.component.css',
 })
 export class TransactionsCreateComponent {
+  private categorieService = inject(CategoriesService);
   currentStep = 1;
   isLoading = false;
 
@@ -72,23 +78,9 @@ export class TransactionsCreateComponent {
     },
   ];
 
-  categories: Category[] = [
-    { id: 1, name: 'Food & Dining', icon: '🍽️' },
-    { id: 2, name: 'Transportation', icon: '🚗' },
-    { id: 3, name: 'Shopping', icon: '🛍️' },
-    { id: 4, name: 'Entertainment', icon: '🎬' },
-    { id: 5, name: 'Bills & Utilities', icon: '💡' },
-    { id: 6, name: 'Healthcare', icon: '🏥' },
-  ];
+  categories: _Category[] = [];
 
-  subcategories: Subcategory[] = [
-    { id: 1, name: 'Restaurants', categoryId: 1 },
-    { id: 2, name: 'Groceries', categoryId: 1 },
-    { id: 3, name: 'Gas', categoryId: 2 },
-    { id: 4, name: 'Public Transport', categoryId: 2 },
-    { id: 5, name: 'Clothing', categoryId: 3 },
-    { id: 6, name: 'Electronics', categoryId: 3 },
-  ];
+  subcategories: _Subcategory[] = [];
 
   transactionDetails: TransactionDetails = {
     amount: 0,
@@ -96,15 +88,16 @@ export class TransactionsCreateComponent {
     date: new Date().toISOString().split('T')[0],
   };
 
-  selectedCategory: Category | null = null;
-  selectedSubcategory: Subcategory | null = null;
+  selectedCategory: _Category | null = null;
+  selectedSubcategory: _Subcategory | null = null;
 
-  get filteredSubcategories(): Subcategory[] {
-    return this.selectedCategory
-      ? this.subcategories.filter(
-          (sub) => sub.categoryId === this.selectedCategory!.id
-        )
-      : [];
+  get filteredSubcategories(): _Subcategory[] {
+    // return this.selectedCategory
+    //   ? this.subcategories.filter(
+    //       (sub) => sub.categoryId === this.selectedCategory.id
+    //     )
+    //   : [];
+    return [];
   }
 
   get canProceedToStep2(): boolean {
@@ -122,7 +115,19 @@ export class TransactionsCreateComponent {
     );
   }
 
-  selectCategory(category: Category): void {
+  constructor() {
+    this.categorieService.getCategories().pipe(
+      take(1)
+    ).subscribe((response: Category[]) => {
+      this.categories = response.map((category: Category) => ({
+        id: category.id,
+        name: category.name,
+        icon: category.icon,
+      }));
+    });
+  }
+
+  selectCategory(category: _Category): void {
     this.categories.forEach((cat) => (cat.selected = false));
     category.selected = true;
     this.selectedCategory = category;
@@ -130,7 +135,7 @@ export class TransactionsCreateComponent {
     this.subcategories.forEach((sub) => (sub.selected = false));
   }
 
-  selectSubcategory(subcategory: Subcategory): void {
+  selectSubcategory(subcategory: _Subcategory): void {
     this.subcategories.forEach((sub) => (sub.selected = false));
     subcategory.selected = true;
     this.selectedSubcategory = subcategory;
@@ -219,13 +224,13 @@ export class TransactionsCreateComponent {
     }
   }
 
-  getCategoryCardClasses(category: Category): string {
+  getCategoryCardClasses(category: _Category): string {
     return category.selected
       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400'
       : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600';
   }
 
-  getSubcategoryCardClasses(subcategory: Subcategory): string {
+  getSubcategoryCardClasses(subcategory: _Subcategory): string {
     return subcategory.selected
       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400'
       : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600';

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ExpandableTableComponent, ExpandableTableColumn, ExpandableTableData } from '@components/expandable-table/expandable-table.component';
 import { CategoriesService } from '@services/categories/categories.service';
 import { Category } from '@models/categories.model';
-import { CATEGORY_ICONS } from '../categories-icons';
+import { CATEGORY_ICONS } from '../../../core/services/categories/categories-icons';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -44,17 +44,11 @@ export class CategoriesListComponent implements OnInit {
     
     private mapCategoriesToTableData(categories: Category[]): ExpandableTableData[] {
         return categories.map((category: Category) => {
-            // Get the name from translations (preferring English, fallback to first available)
-            const name = category.translations?.es?.name || 
-                        category.translations?.en?.name || 
-                        Object.values(category.translations || {})[0]?.name || 
-                        'Unnamed Category';
-            
-            
+            const name = category.name;
             const tableRow: ExpandableTableData = {
                 id: category.id,
                 name: name,
-                icon: this.sanitizer.bypassSecurityTrustHtml(CATEGORY_ICONS.get(category.translations.en.name) || ''),
+                icon: category.icon,
                 parent: category.parent || 'Root',
                 subcategoryCount: category.subcategories?.length || 0,
                 actions: 'Edit | Delete'
@@ -64,10 +58,7 @@ export class CategoriesListComponent implements OnInit {
             if (category.subcategories && category.subcategories.length > 0) {
                 tableRow.children = category.subcategories.map((sub: Category) => ({
                     id: sub.id,
-                    name: sub.translations?.es?.name || 
-                          sub.translations?.en?.name || 
-                          Object.values(sub.translations || {})[0]?.name || 
-                          'Unnamed Subcategory',
+                    name: sub.name,
                     parent: sub.parent || category.id,
                     subcategoryCount: sub.subcategories?.length || 0
                 }));
