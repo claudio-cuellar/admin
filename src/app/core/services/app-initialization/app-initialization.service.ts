@@ -9,6 +9,7 @@ export class AppInitializationService {
   private currencyService = inject(CurrencyService);
 
   initialize(): Promise<void> {
+    console.log(`aasdasdasdas`);
     return new Promise((resolve) => {
       // Detect user locale
       const userLocale = this.detectUserLocale();
