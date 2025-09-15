@@ -14,10 +14,12 @@ export class DashboardComponent implements OnInit{
   private reportsService = inject(ReportsService);
   incomeVsExpensesData: any;
   expensesByCategoryData: any;
+  isLoading = false;
 
   ngOnInit(): void {
     const incomeVsExpensesData$ = this.reportsService.getIncomeVsExpenseSummary();
     const expensesByCategory$ = this.reportsService.getExpensesByCategory();
+    this.isLoading = true;
 
     incomeVsExpensesData$.pipe(
       take(1),
@@ -33,9 +35,9 @@ export class DashboardComponent implements OnInit{
       })
     ).subscribe({
       next: (response) => {
-        console.log(response);
         this.incomeVsExpensesData = response.incomeVsExpensesData;
         this.expensesByCategoryData = response.expensesByCategory;
+        this.isLoading = false;
       }
     });
   }

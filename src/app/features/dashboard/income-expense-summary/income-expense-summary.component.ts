@@ -4,7 +4,9 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   input,
+  ViewChild,
 } from '@angular/core';
 import ApexCharts from 'apexcharts';
 
@@ -19,7 +21,24 @@ interface IncomeExpenseSummaryData {
   templateUrl: './income-expense-summary.component.html',
 })
 export class IncomeExpenseSummaryComponent {
+  @ViewChild('barChart') set barChart(el: ElementRef) {
+    if (el) {
+      if (
+        document.getElementById('bar-chart') &&
+        typeof ApexCharts !== 'undefined' &&
+        this.data()
+      ) {
+        const chart = new ApexCharts(
+          document.getElementById('bar-chart'),
+          this.options
+        );
+        chart.render();
+      }
+    }
+  }
+
   data = input.required<IncomeExpenseSummaryData[]>();
+  isLoading = input.required<boolean>();
 
   // Define consistent colors
   private readonly INCOME_COLOR = '#31C48D';
@@ -181,21 +200,5 @@ export class IncomeExpenseSummaryComponent {
   // Getter for chart options
   get options() {
     return this.chartOptions();
-  }
-
-  constructor() {
-    effect(() => {
-      if (
-        document.getElementById('bar-chart') &&
-        typeof ApexCharts !== 'undefined' &&
-        this.data()
-      ) {
-        const chart = new ApexCharts(
-          document.getElementById('bar-chart'),
-          this.options
-        );
-        chart.render();
-      }
-    });
   }
 }

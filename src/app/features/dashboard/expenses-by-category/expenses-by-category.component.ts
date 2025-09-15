@@ -1,9 +1,10 @@
 import {
   Component,
   computed,
-  effect,
+  ElementRef,
   inject,
-  input
+  input,
+  ViewChild,
 } from '@angular/core';
 import { CurrencyService } from '@services/currency/currency.service';
 import ApexCharts from 'apexcharts';
@@ -19,12 +20,8 @@ interface ExpensesByCategoryData {
   templateUrl: 'expenses-by-category.component.html',
 })
 export class ExpensesByCategoryComponent {
-  private currencyService = inject(CurrencyService);
-
-  data = input.required<ExpensesByCategoryData[]>();
-
-  constructor() {
-    effect(() => {
+  @ViewChild('pieChart') set pieChart(element: ElementRef) {
+    if (element) {
       if (
         document.getElementById('pie-chart') &&
         typeof ApexCharts !== 'undefined' &&
@@ -36,8 +33,12 @@ export class ExpensesByCategoryComponent {
         );
         chart.render();
       }
-    });
+    }
   }
+  private currencyService = inject(CurrencyService);
+
+  data = input.required<ExpensesByCategoryData[]>();
+  isLoading = input<boolean>();
 
   chartOptions = computed(() => {
     if (!this.data()) {
