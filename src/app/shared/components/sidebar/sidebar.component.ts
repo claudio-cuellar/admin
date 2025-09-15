@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuService } from '@services/menu/menu.service';
@@ -12,6 +12,7 @@ import { MenuSection } from '@models/menu.model';
 })
 export class SidebarComponent {
   @Input() open = false;
+  @Output() closeSidebar = new EventEmitter<void>();
   
   private menuService = inject(MenuService);
   menuSections: MenuSection[] = [];
@@ -31,5 +32,13 @@ export class SidebarComponent {
 
   isExpanded(itemId: string): boolean {
     return this.expandedItems.has(itemId);
+  }
+
+  onMenuItemClick(): void {
+    this.closeSidebar.emit();
+  }
+
+  onBackdropClick(): void {
+    this.closeSidebar.emit();
   }
 }

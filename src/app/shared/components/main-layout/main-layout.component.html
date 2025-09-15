@@ -2,8 +2,8 @@
   <!-- Pass event to toggle sidebar -->
   <app-topbar (menuClick)="toggleSidebar()"></app-topbar>
 
-  <!-- Sidebar with state binding -->
-  <app-sidebar [open]="sidebarOpen"></app-sidebar>
+  <!-- Sidebar with state binding and close event -->
+  <app-sidebar [open]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar>
 
   <main class="p-4 md:ml-64 h-auto pt-20">
     <router-outlet />

@@ -1,9 +1,13 @@
+<!-- Backdrop overlay for mobile -->
+<div *ngIf="open" class="fixed inset-0 z-30 bg-gray-900/50 dark:bg-gray-900/80 md:hidden" (click)="onBackdropClick()"
+    aria-hidden="true"></div>
+
 <aside aria-label="Sidenav" class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform
          bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700
          sm:translate-x-0" [ngClass]="open ? 'translate-x-0' : '-translate-x-full'">
     <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
         <!-- Search Form -->
-        <form action="#" method="GET" class="md:hidden mb-2">
+        <!-- <form action="#" method="GET" class="md:hidden mb-2">
             <label for="sidebar-search" class="sr-only">Search</label>
             <div class="relative">
                 <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -18,20 +22,19 @@
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Search" />
             </div>
-        </form>
+        </form> -->
 
         <!-- Menu Sections -->
         <div *ngFor="let section of menuSections">
-            <ul class="space-y-2" [class.pt-5]="section.hasSeparator" [class.mt-5]="section.hasSeparator" 
-                [class.border-t]="section.hasSeparator" [class.border-gray-200]="section.hasSeparator" 
+            <ul class="space-y-2" [class.pt-5]="section.hasSeparator" [class.mt-5]="section.hasSeparator"
+                [class.border-t]="section.hasSeparator" [class.border-gray-200]="section.hasSeparator"
                 [class.dark:border-gray-700]="section.hasSeparator">
-                
+
                 <li *ngFor="let item of section.items">
                     <!-- Simple Menu Item -->
-                    <a *ngIf="!item.isCollapsible" 
-                       [routerLink]="item.route || '#'"
-                       routerLinkActive="bg-gray-100 dark:bg-gray-700"
-                       class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <a *ngIf="!item.isCollapsible" [routerLink]="item.route || '#'"
+                        routerLinkActive="bg-gray-100 dark:bg-gray-700" (click)="onMenuItemClick()"
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <span [innerHTML]="item.icon"></span>
                         <span class="ml-3">{{ item.label }}</span>
                         <span *ngIf="item.badge" [class]="item.badge.class">
@@ -41,30 +44,28 @@
 
                     <!-- Collapsible Menu Item -->
                     <div *ngIf="item.isCollapsible">
-                        <button type="button"
-                            (click)="toggleSubmenu(item.id)"
+                        <button type="button" (click)="toggleSubmenu(item.id)"
                             class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                            [attr.aria-controls]="'dropdown-' + item.id"
-                            [attr.aria-expanded]="isExpanded(item.id)">
+                            [attr.aria-controls]="'dropdown-' + item.id" [attr.aria-expanded]="isExpanded(item.id)">
                             <span [innerHTML]="item.icon"></span>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">{{ item.label }}</span>
-                            <svg aria-hidden="true" class="w-6 h-6 transition-transform duration-200" 
-                                 [class.rotate-180]="isExpanded(item.id)"
-                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <svg aria-hidden="true" class="w-6 h-6 transition-transform duration-200"
+                                [class.rotate-180]="isExpanded(item.id)" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                     clip-rule="evenodd"></path>
                             </svg>
                         </button>
-                        
+
                         <!-- Submenu -->
-                        <ul [id]="'dropdown-' + item.id" 
+                        <ul [id]="'dropdown-' + item.id"
                             class="py-2 space-y-2 transition-all duration-200 overflow-hidden"
                             [class.hidden]="!isExpanded(item.id)">
                             <li *ngFor="let child of item.children">
-                                <a [routerLink]="child.route || '#'"
-                                   routerLinkActive="bg-gray-100 dark:bg-gray-700"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <a [routerLink]="child.route || '#'" routerLinkActive="bg-gray-100 dark:bg-gray-700"
+                                    (click)="onMenuItemClick()"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                     {{ child.label }}
                                 </a>
                             </li>
