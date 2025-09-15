@@ -17,9 +17,6 @@ interface IncomeExpenseSummaryData {
 @Component({
   selector: 'app-dashboard-income-expense-summary',
   templateUrl: './income-expense-summary.component.html',
-  imports: [
-    CurrencyPipe
-  ]
 })
 export class IncomeExpenseSummaryComponent {
   data = input.required<IncomeExpenseSummaryData[]>();
