@@ -1,54 +1,68 @@
-.table-container {
-  @apply shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg;
-}
+@import "tailwindcss";
 
-.table {
-  @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
-}
+@layer utilities {
+    .table-striped tbody tr:nth-child(even) {
+        background-color: var(--color-gray-700);
+    }
 
-.table-striped tbody tr:nth-child(even) {
-  @apply bg-gray-50 dark:bg-gray-750;
-}
+    .light .table-striped tbody tr:nth-child(even) {
+        background-color: var(--color-gray-50);
+    }
 
-.table-hover tbody tr:hover {
-  @apply bg-gray-100 dark:bg-gray-600;
-}
+    .table-hover tbody tr:hover {
+        background-color: var(--color-gray-600);
+    }
 
-.table-bordered {
-  @apply border-collapse;
-}
+    .light .table-hover tbody tr:hover {
+        background-color: var(--color-gray-100);
+    }
 
-.table-bordered th,
-.table-bordered td {
-  @apply border border-gray-200 dark:border-gray-600;
+    .light .table-bordered th,
+    .light .table-bordered td {
+        border-width: 1px;
+        border-color: var(--color-gray-200);
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border-width: 1px;
+        border-color: var(--color-gray-600);
+    }
 }
 
 /* Responsive table */
 @media (max-width: 768px) {
-  .table-container {
-    @apply overflow-x-auto;
-  }
-  
-  .table {
-    @apply min-w-max;
-  }
-  
-  .table th,
-  .table td {
-    @apply px-3 py-2 text-xs;
-  }
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: max-content;
+    }
+
+    .table th,
+    .table td {
+        padding-left: 0.75rem;
+        /* px-3 */
+        padding-right: 0.75rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
 }
 
 /* Loading animation */
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .animate-spin {
-  animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
 }
