@@ -43,6 +43,13 @@ export class TopbarComponent implements OnInit, OnDestroy {
 		this.menuClick.emit();
 	}
 
+	closeDropdown() {
+		const dropdown = document.getElementById('dropdown');
+		if (dropdown) {
+			dropdown.classList.add('hidden');
+		}
+	}
+
 	ngOnInit(): void {
 		this.globalState.user$
 			.pipe(

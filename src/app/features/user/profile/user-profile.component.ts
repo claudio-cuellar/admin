@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ContainerComponent } from '@components/container/container.component';
+import { GlobalStateService } from '@services/global-state/global-state.service';
+import { UserService } from '@services/user/user.service';
+import { switchMap, take, throwError } from 'rxjs';
+import { User } from '@models/user.model';
 
 export interface UserProfile {
   email: string;
@@ -19,9 +23,15 @@ export interface UserProfile {
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
+  private globalState = inject(GlobalStateService);
+  private userService = inject(UserService);
   profileForm: FormGroup;
   isEditMode = false;
   isLoading = false;
+  displayName: string = '';
+	profilePictureUrl: string = '';
+  defaultProfilePicture: string =
+		'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png';
 
   // Mock user data
   userData: UserProfile = {
@@ -47,7 +57,25 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadUserData() {
-    this.profileForm.patchValue(this.userData);
+    this.userService.getCurrentUserDetails().pipe(
+      take(1),
+      switchMap((user: User | null) => {
+        if (user) {
+						this.profileForm.patchValue(user);
+
+            return this.userService.getUserImage(user?.id);
+        }
+
+        return throwError(() => new Error('User not found'));
+      })
+    ).subscribe({
+        next: (blob: Blob) => {
+          this.profilePictureUrl = URL.createObjectURL(blob);
+        },
+        error: () => {
+          this.profilePictureUrl = this.defaultProfilePicture;
+        }
+      });
   }
 
   toggleEditMode() {
