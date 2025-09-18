@@ -1,39 +1,57 @@
-/* Base container styles */
-.container-base {
-  @apply transition-all duration-300 ease-in-out;
+@import 'tailwindcss';
+
+@layer utilities {
+
+    /* Base container styles */
+    .container-base {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 300ms;
+    }
+
+    /* Hover effects */
+    .container-hover:hover {
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        transform: scale(1.02);
+        transition-property: all;
+        transition-duration: 200ms;
+    }
+
+    /* Focus styles for accessibility */
+    .container-focus:focus-within {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px rgb(59 130 246 / 0.5);
+    }
 }
 
-/* Responsive breakpoints */
+/* Responsive breakpoints - converted to pure CSS */
 @media (max-width: 640px) {
-  .container-responsive {
-    @apply p-4 mx-4;
-  }
+    .container-responsive {
+        padding: 1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
-  .container-responsive {
-    @apply p-6 mx-6;
-  }
+    .container-responsive {
+        padding: 1.5rem;
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .container-responsive {
-    @apply p-8 mx-8;
-  }
+    .container-responsive {
+        padding: 2rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
 }
 
 @media (min-width: 1025px) {
-  .container-responsive {
-    @apply p-10;
-  }
-}
-
-/* Hover effects */
-.container-hover:hover {
-  @apply shadow-lg transform scale-[1.02] transition-all duration-200;
-}
-
-/* Focus styles for accessibility */
-.container-focus:focus-within {
-  @apply ring-2 ring-blue-500 ring-opacity-50;
+    .container-responsive {
+        padding: 2.5rem;
+    }
 }
