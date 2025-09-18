@@ -64,17 +64,17 @@ export class ExpandableTableComponent {
   });
   
   tableClasses = computed(() => {
-    const classes = ['table', 'w-full'];
+    const classes = ['table', 'w-full', 'min-w-full', 'divide-y', 'divide-gray-200', 'dark:divide-gray-700'];
     
     if (this.striped()) classes.push('table-striped');
     if (this.hoverable()) classes.push('table-hover');
-    if (this.bordered()) classes.push('table-bordered');
+    if (this.bordered()) classes.push('table-bordered', 'border-collapse');
     
     return classes.join(' ');
   });
   
   containerClasses = computed(() => {
-    const classes = ['table-container'];
+    const classes = ['table-container', 'shadow-sm', 'border', 'border-gray-200', 'dark:border-gray-700', 'rounded-lg'];
     
     if (this.responsive()) classes.push('overflow-x-auto');
     
