@@ -1,0 +1,26 @@
+/* Additional custom styles for the user profile component */
+.profile-avatar {
+    transition: all 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* Form field focus animations */
+.form-field {
+    transition: all 0.2s ease;
+}
+
+.form-field:focus {
+    transform: translateY(-1px);
+}
+
+/* Loading state styles */
+.loading-overlay {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.dark .loading-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}

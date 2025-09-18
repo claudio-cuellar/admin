@@ -5,43 +5,56 @@ import { AuthGuard } from '@guards/auth.guard';
 import { GuestGuard } from '@guards/guest.guard';
 
 export const routes: Routes = [
-    {
+  {
+    path: '',
+    redirectTo: '/auth/login',
+    pathMatch: 'full'
+  },
+  {
+    path: '',
+    component: AuthLayoutComponent,
+    canActivate: [GuestGuard],
+    children: [
+      {
+        path: 'auth',
+        loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+      },
+    ]
+  },
+  {
+    path: 'main',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
         path: '',
-        redirectTo: '/auth/login',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
-    },
-    {
-        path: '',
-        component: AuthLayoutComponent,
-        canActivate: [GuestGuard],
-        children: [
-            {
-                path: 'auth',
-                loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
-            },
-        ]
-    },
-    {
-        path: 'main',
-        component: MainLayoutComponent,
-        canActivate: [AuthGuard],
-        children: [
-            {
-                path: 'dashboard',
-                loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.dashboardRoutes)
-            },
-            {
-                path: 'transactions',
-                loadChildren: () => import('./features/transactions/transactions.routes').then((m) => m.transactionsRoutes)
-            },
-            {
-                path: 'categories',
-                loadChildren: () => import('./features/categories/categories.routes').then((m) => m.categoriesRoutes)
-            },
-            // {
-            //     path: 'settings',
-            //     loadChildren: () => import('./features/settings/settings.routes').then((m) => m.settingsRoutes)
-            // }
-        ]
-    }
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.dashboardRoutes)
+      },
+      {
+        path: 'transactions',
+        loadChildren: () => import('./features/transactions/transactions.routes').then((m) => m.transactionsRoutes)
+      },
+      {
+        path: 'categories',
+        loadChildren: () => import('./features/categories/categories.routes').then((m) => m.categoriesRoutes)
+      },
+      {
+        path: 'user',
+        loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes)
+      },
+      {
+        path: '**',
+        redirectTo: 'dashboard'
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: '/main/dashboard'
+  }
 ];

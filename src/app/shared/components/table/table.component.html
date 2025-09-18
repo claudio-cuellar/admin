@@ -1,73 +1,79 @@
 <div [class]="containerClasses()">
-  <table [class]="tableClasses()">
-    <thead class="bg-gray-50 dark:bg-gray-700">
-      <tr>
-        @for (header of headers(); track header.key) {
-          <th 
-            [style.width]="getColumnWidth(header)"
-            [style.text-align]="getColumnAlign(header)"
-            class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300"
-            [class.cursor-pointer]="header.sortable"
-            [class.select-none]="header.sortable"
-            (click)="onSort(header)">
-            <div class="flex items-center gap-2" [class.justify-center]="header.align === 'center'" [class.justify-end]="header.align === 'right'">
-              <span>{{ header.label }}</span>
-              @if (header.sortable) {
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  @switch (getSortIcon(header)) {
-                    @case ('sort-up') {
-                      <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
-                    }
-                    @case ('sort-down') {
-                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    }
-                    @default {
-                      <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"></path>
-                    }
-                  }
-                </svg>
-              }
-            </div>
-          </th>
-        }
-      </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-      @if (loading()) {
-        <tr>
-          <td [attr.colspan]="headers().length" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-            <div class="flex items-center justify-center gap-2">
-              <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>Loading...</span>
-            </div>
-          </td>
-        </tr>
-      } @else if (sortedData().length === 0) {
-        <tr>
-          <td [attr.colspan]="headers().length" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-            No data available
-          </td>
-        </tr>
-      } @else {
-        @for (row of sortedData(); track $index) {
-          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-            @for (header of headers(); track header.key) {
-              <td 
-                [style.text-align]="getColumnAlign(header)"
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                @if (header.isHtml) {
-                  <span [innerHTML]="row[header.key]"></span>
-                } @else {
-                  {{ row[header.key] }}
+    <table [class]="tableClasses()">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+                @for (header of headers(); track header.key) {
+                <th [style.width]="getColumnWidth(header)" [style.text-align]="getColumnAlign(header)"
+                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300"
+                    [class.cursor-pointer]="header.sortable" [class.select-none]="header.sortable"
+                    (click)="onSort(header)">
+                    <div class="flex items-center gap-2" [class.justify-center]="header.align === 'center'"
+                        [class.justify-end]="header.align === 'right'">
+                        <span>{{ header.label }}</span>
+                        @if (header.sortable) {
+                        <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            @switch (getSortIcon(header)) {
+                            @case ('sort-up') {
+                            <path fill-rule="evenodd"
+                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                clip-rule="evenodd"></path>
+                            }
+                            @case ('sort-down') {
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            }
+                            @default {
+                            <path
+                                d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z">
+                            </path>
+                            }
+                            }
+                        </svg>
+                        }
+                    </div>
+                </th>
                 }
-              </td>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+            @if (loading()) {
+            <tr>
+                <td [attr.colspan]="headers().length" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <span>Loading...</span>
+                    </div>
+                </td>
+            </tr>
+            } @else if (sortedData().length === 0) {
+            <tr>
+                <td [attr.colspan]="headers().length" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    No data available
+                </td>
+            </tr>
+            } @else {
+            @for (row of sortedData(); track $index) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                @for (header of headers(); track header.key) {
+                <td [style.text-align]="getColumnAlign(header)"
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    @if (header.isHtml) {
+                    <span [innerHTML]="row[header.key]"></span>
+                    } @else {
+                    {{ row[header.key] }}
+                    }
+                </td>
+                }
+            </tr>
             }
-          </tr>
-        }
-      }
-    </tbody>
-  </table>
+            }
+        </tbody>
+    </table>
 </div>
