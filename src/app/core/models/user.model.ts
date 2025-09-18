@@ -1,9 +1,10 @@
 export interface User {
-    id: number;
+    id: string;
     username: string;
     first_name: string;
     last_name: string;
     email: string;
+    profile_picture_url: string;
     avatar?: string;
     role?: string;
     permissions?: string[];

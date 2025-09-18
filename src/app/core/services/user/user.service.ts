@@ -14,8 +14,8 @@ export class UserService {
         return this.http.get<User>(`${this.baseUrl}/${userId}/`);
     }
 
-    getMyDetails(): Observable<User> {
-        return this.http.get<User>(`${this.baseUrl}/me/`);
+    getUserImage(userId: string): Observable<Blob> {
+        return this.http.get(`${this.baseUrl}/${userId}/profile-picture/`, { responseType: 'blob' });
     }
 
     updateUserDetails(userId: string, userData: Partial<User>): Observable<User> {
