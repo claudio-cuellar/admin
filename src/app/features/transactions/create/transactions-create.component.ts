@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerComponent } from '@components/container/container.component';
-import { EnhancedContainerComponent } from '@components/enhanced-container/enhanced-container.component';
+import { ContainerConfig, EnhancedContainerComponent } from '@components/enhanced-container/enhanced-container.component';
 import { Category } from '@models/categories.model';
 import { TransactionPayload, TransactionType } from '@models/transaction.model';
 import { CategoriesService } from '@services/categories/categories.service';
 import { TransactionsService } from '@services/transactions/transactions.service';
-import { take } from 'rxjs';
+import { noop, take } from 'rxjs';
 
 export interface TransactionStep {
   id: number;
@@ -68,6 +68,11 @@ export class TransactionsCreateComponent {
   toastType: 'success' | 'error' = 'success';
   toastMessage = '';
   toastTitle = '';
+
+  containerConfig: ContainerConfig = {
+    border: 'none',
+    padding: 'md'
+  }
 
   steps: TransactionStep[] = [
     {

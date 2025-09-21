@@ -140,10 +140,10 @@ export class EnhancedContainerComponent {
   private getPaddingClass(padding: string): string {
     const paddingMap: { [key: string]: string } = {
       'none': '',
-      'sm': 'p-4',
-      'md': 'p-6',
-      'lg': 'p-8',
-      'xl': 'p-10'
+      'sm': 'sm:p-4',
+      'md': 'sm:p-6',
+      'lg': 'sm:p-8',
+      'xl': 'sm:p-10'
     };
     return paddingMap[padding] || 'p-6';
   }

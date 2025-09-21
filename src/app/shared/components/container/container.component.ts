@@ -60,21 +60,21 @@ export class ContainerComponent {
         break;
     }
 
-    // Padding
+    // Responsive Padding - only apply padding on sm breakpoint and above (not on mobile)
     switch (this.padding) {
       case 'none':
         break;
       case 'sm':
-        classes.push('p-4');
+        classes.push('sm:p-4');
         break;
       case 'md':
-        classes.push('p-6');
+        classes.push('sm:p-6');
         break;
       case 'lg':
-        classes.push('p-8');
+        classes.push('sm:p-8');
         break;
       case 'xl':
-        classes.push('p-10');
+        classes.push('sm:p-10');
         break;
     }
 

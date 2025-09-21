@@ -57,7 +57,7 @@
         <div class="mt-8">
             <!-- Step 1: Categories -->
             <app-enhanced-container *ngIf="currentStep === 1" title="Select Category"
-                subtitle="Choose the category that best describes your transaction">
+                subtitle="Choose the category that best describes your transaction" [config]="containerConfig">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div *ngFor="let category of categories" (click)="selectCategory(category)"
                         [class]="getCategoryCardClasses(category)"
@@ -79,7 +79,7 @@
             </app-enhanced-container>
 
             <!-- Step 2: Subcategories -->
-            <app-enhanced-container *ngIf="currentStep === 2" title="Select Subcategory">
+            <app-enhanced-container *ngIf="currentStep === 2" title="Select Subcategory" [config]="containerConfig">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div *ngFor="let subcategory of subcategories" (click)="selectSubcategory(subcategory)"
                         [class]="getSubcategoryCardClasses(subcategory)"
@@ -103,7 +103,7 @@
 
             <!-- Step 3: Transaction Details -->
             <app-enhanced-container *ngIf="currentStep === 3" title="Transaction Details"
-                subtitle="Enter the transaction information">
+                subtitle="Enter the transaction information" [config]="containerConfig">
                 <div class="space-y-6">
                     <!-- Transaction Type Selection -->
                     <div>
