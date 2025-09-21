@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ExpandableTableComponent, ExpandableTableColumn, ExpandableTableData } from '@components/expandable-table/expandable-table.component';
 import { CategoriesService } from '@services/categories/categories.service';
 import { Category } from '@models/categories.model';
-import { CATEGORY_ICONS } from '../../../core/services/categories/categories-icons';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ContainerComponent } from '@components/container/container.component';
 
 @Component({
     selector: 'app-categories-list',
     standalone: true,
-    imports: [CommonModule, ExpandableTableComponent],
+    imports: [CommonModule, ExpandableTableComponent, ContainerComponent],
     templateUrl: './categories-list.component.html',
     styleUrls: ['./categories-list.component.css']
 })
