@@ -65,16 +65,16 @@ export class ContainerComponent {
       case 'none':
         break;
       case 'sm':
-        classes.push('sm:p-4');
+        classes.push('p-4');
         break;
       case 'md':
-        classes.push('sm:p-6');
+        classes.push('p-6');
         break;
       case 'lg':
-        classes.push('sm:p-8');
+        classes.push('p-8');
         break;
       case 'xl':
-        classes.push('sm:p-10');
+        classes.push('p-10');
         break;
     }
 
