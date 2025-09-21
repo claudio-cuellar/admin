@@ -32,6 +32,10 @@ export class UserProfileComponent implements OnInit {
 	profilePictureUrl: string = '';
   defaultProfilePicture: string =
 		'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png';
+  
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
+  isUploadingImage = false;
 
   // Mock user data
   userData: UserProfile = {
@@ -87,18 +91,71 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPG, PNG, GIF)');
+        return;
+      }
+      
+      // Validate file size (1MB max)
+      const maxSize = 1024 * 1024; // 1MB in bytes
+      if (file.size > maxSize) {
+        alert('File size must be less than 1MB');
+        return;
+      }
+      
+      this.selectedFile = file;
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewUrl = e.target?.result as string;
+        this.profilePictureUrl = this.previewUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  cancelImageUpload(): void {
+    
+    this.selectedFile = null;
+    this.previewUrl = null;
+    // Revert to original image
+    this.loadUserData();
+  }
+
   onSubmit() {
+    console.log(this.selectedFile);
     if (this.profileForm.valid) {
+      let formData = new FormData();
+
+      formData.append('email', this.profileForm.getRawValue().email);
+      formData.append('family_role', this.profileForm.getRawValue().family_role);
+      formData.append('first_name', this.profileForm.getRawValue().first_name);
+      formData.append('last_name', this.profileForm.getRawValue().last_name);
+      formData.append('username', this.profileForm.getRawValue().username);
+
+      if (this.selectedFile) {
+        formData.append('profile_picture', this.selectedFile);
+      }
+
       this.isLoading = true;
       
-      // Simulate API call
-      setTimeout(() => {
-        const formData = this.profileForm.getRawValue();
-        this.userData = { ...this.userData, ...formData };
-        this.isEditMode = false;
-        this.isLoading = false;
-        console.log('Profile updated:', this.userData);
-      }, 1000);
+      this.userService.updateUserDetails(formData).pipe(
+        take(1)
+      ).subscribe({
+        next: (user: User) => {
+          this.globalState.setUser(user);
+          this.isEditMode = false;
+          this.isLoading = false;
+        }
+      });
     } else {
       this.markFormGroupTouched();
     }
