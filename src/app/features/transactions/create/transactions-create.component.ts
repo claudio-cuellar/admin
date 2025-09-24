@@ -9,7 +9,8 @@ import { Category } from '@models/categories.model';
 import { TransactionPayload, TransactionType } from '@models/transaction.model';
 import { CategoriesService } from '@services/categories/categories.service';
 import { TransactionsService } from '@services/transactions/transactions.service';
-import { noop, take } from 'rxjs';
+import { ToastService } from 'app/shared/services/toast/toast.service';
+import { take } from 'rxjs';
 
 export interface TransactionStep {
   id: number;
@@ -56,6 +57,7 @@ export interface TransactionDetails {
 export class TransactionsCreateComponent {
   private categorieService = inject(CategoriesService);
   private transactionsService = inject(TransactionsService);
+  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -234,7 +236,7 @@ export class TransactionsCreateComponent {
           next: (response) => {
             console.log(response);
             this.isLoading = false;
-            this.showSuccessToast('Transaction created successfully!', 'Your transaction has been saved.');
+            this.toastService.success('Success!', 'Transaction created successfully');
             // Reset form after successful creation
             this.resetForm();
             this.router.navigate(['../list'], { relativeTo: this.route });
@@ -242,37 +244,10 @@ export class TransactionsCreateComponent {
           error: (error) => {
             console.error('Error creating transaction:', error);
             this.isLoading = false;
-            this.showErrorToast('Failed to create transaction', 'Please try again or contact support if the problem persists.');
+            this.toastService.error('Error', 'Failed to create transaction. Please try again.');
           }
         });
     }
-  }
-
-  // Toast management methods
-  showSuccessToast(title: string, message: string): void {
-    this.toastType = 'success';
-    this.toastTitle = title;
-    this.toastMessage = message;
-    this.showToast = true;
-    this.autoHideToast();
-  }
-
-  showErrorToast(title: string, message: string): void {
-    this.toastType = 'error';
-    this.toastTitle = title;
-    this.toastMessage = message;
-    this.showToast = true;
-    this.autoHideToast();
-  }
-
-  hideToast(): void {
-    this.showToast = false;
-  }
-
-  private autoHideToast(): void {
-    setTimeout(() => {
-      this.hideToast();
-    }, 5000); // Hide after 5 seconds
   }
 
   private resetForm(): void {
@@ -303,12 +278,6 @@ export class TransactionsCreateComponent {
       ? 'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200'
       : 'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200';
     return `${baseClasses} ${typeClasses}`;
-  }
-
-  getToastIconClasses(): string {
-    return this.toastType === 'success'
-      ? 'inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200'
-      : 'inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200';
   }
 
   getStepClasses(step: TransactionStep, hasConnector: boolean): string {
